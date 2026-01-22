@@ -66,7 +66,7 @@ export default function App() {
             {/* Branding Footer */}
             <div className="fixed bottom-0 left-0 right-0 z-50 flex justify-between items-center px-6 py-4 pointer-events-none">
                 <motion.img
-                    src="/mini-icon-plv-white.png"
+                    src="mini-icon-plv-white.png"
                     alt="PLV Icon"
                     className="h-8 w-auto opacity-60"
                     initial={{ opacity: 0, y: 20 }}
@@ -74,7 +74,7 @@ export default function App() {
                     transition={{ delay: 1 }}
                 />
                 <motion.img
-                    src="/solo-logo-white.png"
+                    src="solo-logo-white.png"
                     alt="Logo"
                     className="h-8 w-auto opacity-60"
                     initial={{ opacity: 0, y: 20 }}
