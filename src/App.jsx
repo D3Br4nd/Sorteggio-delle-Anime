@@ -63,22 +63,22 @@ export default function App() {
 
     return (
         <div className="relative min-h-dvh overflow-hidden no-select">
-            {/* Branding Footer */}
-            <div className="fixed bottom-0 left-0 right-0 z-50 flex justify-between items-center px-6 py-4 pointer-events-none">
+            {/* Branding Footer - Hidden on very small height screens to avoid covering buttons */}
+            <div className="fixed bottom-0 left-0 right-0 z-40 flex justify-between items-center px-6 py-4 pointer-events-none sm:opacity-100 opacity-0 transition-opacity duration-500">
                 <motion.img
                     src="mini-icon-plv-white.png"
                     alt="PLV Icon"
-                    className="h-8 w-auto opacity-60"
+                    className="h-6 w-auto opacity-40"
                     initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 0.6, y: 0 }}
+                    animate={{ opacity: 0.4, y: 0 }}
                     transition={{ delay: 1 }}
                 />
                 <motion.img
                     src="solo-logo-white.png"
                     alt="Logo"
-                    className="h-8 w-auto opacity-60"
+                    className="h-6 w-auto opacity-40"
                     initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 0.6, y: 0 }}
+                    animate={{ opacity: 0.4, y: 0 }}
                     transition={{ delay: 1 }}
                 />
             </div>

@@ -270,7 +270,7 @@ export default function ResultScreen({ result, onRestart }) {
 
             {/* Action Buttons - More central and padded to avoid footer overlap */}
             <motion.div
-                className="py-12 space-y-4"
+                className="pt-8 pb-32 space-y-4"
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.6, duration: 0.5 }}

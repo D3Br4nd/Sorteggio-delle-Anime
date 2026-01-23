@@ -301,12 +301,20 @@ body {
   user-select: none;
 }
 
-/* Safe area padding for notched phones */
-@supports (padding: max(0px)) {
-  .safe-area-top {
-    padding-top: max(1rem, env(safe-area-inset-top));
-  }
-  .safe-area-bottom {
-    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+/* Safe area padding for notched phones and mobile browsers */
+.safe-area-top {
+  padding-top: 1rem;
+  padding-top: max(1rem, env(safe-area-inset-top));
+}
+
+.safe-area-bottom {
+  padding-bottom: 2rem;
+  padding-bottom: max(2rem, env(safe-area-inset-bottom));
+}
+
+/* Fallback for devices that don't support dvh (though Vite usually handles polyfills if configured) */
+@supports not (height: 100dvh) {
+  .min-h-dvh {
+    min-height: 100vh;
   }
 }

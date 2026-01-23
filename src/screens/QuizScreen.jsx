@@ -59,7 +59,7 @@ export default function QuizScreen({ onComplete, onBackgroundChange }) {
     });
 
     return (
-        <div className="min-h-screen flex flex-col px-5 py-6 safe-area-top safe-area-bottom">
+        <div className="min-h-screen flex flex-col px-5 py-6 safe-area-top safe-area-bottom overflow-y-auto">
             {/* Progress */}
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
@@ -121,7 +121,7 @@ export default function QuizScreen({ onComplete, onBackgroundChange }) {
 
             {/* Continue Button - Pushed up to avoid footer logos */}
             <motion.div
-                className="mt-auto pb-20"
+                className="mt-auto pb-24 sm:pb-32"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.8 }}
