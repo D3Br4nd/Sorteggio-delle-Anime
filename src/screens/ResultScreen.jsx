@@ -7,7 +7,10 @@ export default function ResultScreen({ result, onRestart }) {
     const [showFlash, setShowFlash] = useState(true);
     const [revealed, setRevealed] = useState(false);
     const [isSharing, setIsSharing] = useState(false);
+    const [stats, setStats] = useState(null);
     const cardRef = useRef(null);
+
+    const API_URL = import.meta.env.VITE_API_URL || '/sda/api';
 
     useEffect(() => {
         // Flash effect
@@ -20,11 +23,32 @@ export default function ResultScreen({ result, onRestart }) {
             setRevealed(true);
         }, 800);
 
+        // Track result and fetch stats
+        const trackAndFetch = async () => {
+            try {
+                // 1. Send result to backend
+                await fetch(`${API_URL}/results`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ resultId: result.id })
+                });
+
+                // 2. Fetch global stats
+                const response = await fetch(`${API_URL}/stats`);
+                const data = await response.json();
+                setStats(data);
+            } catch (error) {
+                console.error('Error with tracking/stats:', error);
+            }
+        };
+
+        trackAndFetch();
+
         return () => {
             clearTimeout(flashTimer);
             clearTimeout(revealTimer);
         };
-    }, []);
+    }, [result.id, API_URL]);
 
     const handleShare = async () => {
         if (!cardRef.current || isSharing) return;
@@ -305,6 +329,60 @@ export default function ResultScreen({ result, onRestart }) {
                 >
                     Ripeti il Rituale
                 </button>
+
+                {/* Global Ranking Section */}
+                {stats && stats.total > 0 && (
+                    <motion.div
+                        className="mt-12 pt-12 border-t border-white/5"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 2 }}
+                    >
+                        <h3 className="font-cinzel text-center text-gold/40 text-xs tracking-[0.3em] mb-8">
+                            COSA SONO DIVENTATI GLI ALTRI
+                        </h3>
+
+                        <div className="space-y-6 max-w-sm mx-auto">
+                            {['cavaliere', 'architetto', 'scriba'].map((id) => {
+                                const count = stats.stats[id] || 0;
+                                const percentage = Math.round((count / stats.total) * 100);
+                                const isCurrent = id === result.id;
+
+                                const label = id === 'cavaliere' ? 'CAVALIERE' :
+                                    id === 'architetto' ? 'ARCHITETTO' : 'SCRIBA';
+
+                                const color = id === 'cavaliere' ? '#C41E3A' :
+                                    id === 'architetto' ? '#4A7C59' : '#4169E1';
+
+                                return (
+                                    <div key={id} className={`space-y-2 ${isCurrent ? 'opacity-100' : 'opacity-50'}`}>
+                                        <div className="flex justify-between items-end">
+                                            <span className="font-cinzel text-[10px] tracking-widest text-parchment/80">
+                                                {label} {isCurrent && <span className="text-gold ml-1">(TU)</span>}
+                                            </span>
+                                            <span className="font-spectral text-xs tabular-nums text-parchment/60">
+                                                {percentage}%
+                                            </span>
+                                        </div>
+                                        <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                                            <motion.div
+                                                className="h-full rounded-full"
+                                                style={{ backgroundColor: color }}
+                                                initial={{ width: 0 }}
+                                                animate={{ width: `${percentage}%` }}
+                                                transition={{ duration: 1, delay: 2.2 }}
+                                            />
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        <p className="mt-8 text-center font-spectral text-[10px] text-parchment/30 italic">
+                            Basato su {stats.total} anime sorteggiate
+                        </p>
+                    </motion.div>
+                )}
             </motion.div>
         </div>
     );

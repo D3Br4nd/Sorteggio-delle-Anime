@@ -1,12 +1,20 @@
 services:
-  sorteggio-anime:
+  sorteggio-anime-frontend:
     build: .
-    # ports:
-    # - "8080:80"
-    restart: always
     container_name: sorteggio-anime
+    restart: always
     networks:
       - plv_network
+
+  sorteggio-anime-backend:
+    build: ./server
+    container_name: sorteggio-anime-backend
+    restart: always
+    networks:
+      - plv_network
+    environment:
+      - REDIS_URL=redis://redis-cache:6379/3
+      - PORT=3001
 
 networks:
   plv_network:

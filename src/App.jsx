@@ -10,6 +10,7 @@ import LandingScreen from './screens/LandingScreen';
 import QuizScreen from './screens/QuizScreen';
 import TransitionScreen from './screens/TransitionScreen';
 import ResultScreen from './screens/ResultScreen';
+import StatsScreen from './screens/StatsScreen';
 
 // Data
 import { calculateResult } from './data/results';
@@ -20,6 +21,7 @@ const SCREENS = {
     QUIZ: 'quiz',
     TRANSITION: 'transition',
     RESULT: 'result',
+    STATS: 'stats',
 };
 
 export default function App() {
@@ -27,6 +29,13 @@ export default function App() {
     const [backgroundTheme, setBackgroundTheme] = useState('dungeon');
     const [finalResult, setFinalResult] = useState(null);
     const [scores, setScores] = useState(null);
+
+    // Initial route check
+    useState(() => {
+        if (window.location.pathname.endsWith('/scores') || window.location.pathname.endsWith('/scores/')) {
+            setCurrentScreen(SCREENS.STATS);
+        }
+    });
 
     // Handle starting the quiz
     const handleStart = useCallback(() => {
@@ -141,6 +150,18 @@ export default function App() {
                             transition={{ duration: 0.5 }}
                         >
                             <ResultScreen result={finalResult} onRestart={handleRestart} />
+                        </motion.div>
+                    )}
+
+                    {currentScreen === SCREENS.STATS && (
+                        <motion.div
+                            key="stats"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.5 }}
+                        >
+                            <StatsScreen />
                         </motion.div>
                     )}
                 </AnimatePresence>
