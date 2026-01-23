@@ -58,18 +58,28 @@ export default function ResultScreen({ result, onRestart }) {
         const shareTitle = 'Il Sorteggio delle Anime - CaTE 2026';
 
         try {
-            // Check if Web Share API is available and supports sharing files
+            // Small delay to ensure the UI is ready and the animated glow is hidden
+            await new Promise(resolve => setTimeout(resolve, 200));
+
+            const options = {
+                cacheBust: true,
+                backgroundColor: '#050505',
+                pixelRatio: 2,
+                style: {
+                    borderRadius: '16px',
+                }
+            };
+
+            // Double render strategy for reliability with fonts and external resources
+            // Sometimes html-to-image needs a "warm-up" to capture everything correctly
+            await toBlob(cardRef.current, options);
+            const blob = await toBlob(cardRef.current, options);
+
+            if (!blob) throw new Error('Failed to capture screenshot');
+
+            // Web Share API support check
             if (navigator.share && navigator.canShare) {
-                // Take a screenshot of the card
-                const blob = await toBlob(cardRef.current, {
-                    cacheBust: true,
-                    includeQueryParams: true,
-                    backgroundColor: '#050505', // Ensure dark background in share
-                });
-
-                if (!blob) throw new Error('Failed to capture screenshot');
-
-                const imageFile = new File([blob], 'my-destiny.png', { type: 'image/png' });
+                const imageFile = new File([blob], 'il-mio-destino.png', { type: 'image/png' });
 
                 if (navigator.canShare({ files: [imageFile] })) {
                     await navigator.share({
@@ -78,7 +88,7 @@ export default function ResultScreen({ result, onRestart }) {
                         files: [imageFile],
                     });
                 } else {
-                    // Fallback to sharing only text/url if file share is not supported
+                    // Fallback to sharing only text/url if file share is not supported by the browser
                     await navigator.share({
                         title: shareTitle,
                         text: shareText,
@@ -86,11 +96,8 @@ export default function ResultScreen({ result, onRestart }) {
                     });
                 }
             } else {
-                // Fallback for desktop or non-sharing browsers: just download and show instructions
-                const dataUrl = await toPng(cardRef.current, {
-                    cacheBust: true,
-                    backgroundColor: '#050505',
-                });
+                // Desktop / Non-supporting browser fallback - Download image
+                const dataUrl = await toPng(cardRef.current, options);
                 const link = document.createElement('a');
                 link.download = 'il-mio-destino-cate.png';
                 link.href = dataUrl;
@@ -99,15 +106,18 @@ export default function ResultScreen({ result, onRestart }) {
             }
         } catch (error) {
             console.error('Error sharing:', error);
-            // Even if everything fails, at least provide a fallback text share
-            if (navigator.share) {
+
+            // Handle specific error cases (except user cancellation)
+            if (error.name !== 'AbortError') {
+                alert('La condivisione diretta non è stata possibile su questo browser. Scarico l\'immagine per te.');
                 try {
-                    await navigator.share({
-                        title: shareTitle,
-                        text: shareText,
-                    });
+                    const dataUrl = await toPng(cardRef.current, { backgroundColor: '#050505', pixelRatio: 2 });
+                    const link = document.createElement('a');
+                    link.download = 'il-mio-destino-cate.png';
+                    link.href = dataUrl;
+                    link.click();
                 } catch (e) {
-                    console.error('Final share fallback failed');
+                    console.error('Final fallback download failed');
                 }
             }
         } finally {
@@ -215,18 +225,20 @@ export default function ResultScreen({ result, onRestart }) {
                                 />
 
                                 {/* Tagline */}
-                                <motion.h2
-                                    className="font-cinzel text-xl text-gold text-center mb-4 text-shadow-gold"
+                                <motion.div
+                                    className="mb-4"
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
                                     transition={{ delay: 1.1 }}
                                 >
-                                    {result.tagline}
-                                </motion.h2>
+                                    <h2 className="font-cinzel text-xl text-gold text-center text-shadow-gold">
+                                        {result.tagline}
+                                    </h2>
+                                </motion.div>
 
                                 {/* Traits */}
                                 <motion.div
-                                    className="flex justify-center gap-3 mb-6"
+                                    className="flex justify-center gap-2 mb-6"
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
                                     transition={{ delay: 1.2 }}
@@ -234,7 +246,7 @@ export default function ResultScreen({ result, onRestart }) {
                                     {result.traits.map((trait, index) => (
                                         <span
                                             key={trait}
-                                            className="px-3 py-1 rounded-full text-xs font-spectral tracking-wider"
+                                            className="px-2 py-1 rounded-full text-xs font-spectral tracking-wider"
                                             style={{
                                                 backgroundColor: `${result.color}20`,
                                                 color: result.color,
@@ -258,7 +270,7 @@ export default function ResultScreen({ result, onRestart }) {
                             </div>
                         </div>
 
-                        {/* Animated border glow */}
+                        {/* Animated border glow (Hidden during sharing to avoid glitches) */}
                         {!isSharing && (
                             <motion.div
                                 className="absolute inset-0 rounded-2xl pointer-events-none"
@@ -279,7 +291,7 @@ export default function ResultScreen({ result, onRestart }) {
                     </motion.div>
                 </div>
 
-                {/* CaTE 2026 Badge */}
+                {/* Footer Badge */}
                 <motion.div
                     className="text-center mb-6"
                     initial={{ opacity: 0 }}
@@ -292,20 +304,14 @@ export default function ResultScreen({ result, onRestart }) {
                 </motion.div>
             </motion.div>
 
-            {/* Action Buttons - More central and padded to avoid footer overlap */}
+            {/* Buttons Section */}
             <motion.div
                 className="pt-8 pb-32 space-y-4"
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.6, duration: 0.5 }}
             >
-                {/* Primary CTA - Screenshot and Share */}
-                <motion.div
-                    className="w-full p-1 rounded-2xl text-center relative overflow-hidden group max-w-sm mx-auto"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 1.8 }}
-                >
+                <div className="w-full p-1 rounded-2xl text-center relative overflow-hidden group max-w-sm mx-auto">
                     <div
                         className="absolute inset-0 opacity-40 blur-xl group-hover:opacity-60 transition-opacity duration-500"
                         style={{ background: result.accentGradient }}
@@ -320,9 +326,8 @@ export default function ResultScreen({ result, onRestart }) {
                             {isSharing ? 'PREPARAZIONE...' : 'RECLAMA IL TUO DESTINO'}
                         </GlowButton>
                     </div>
-                </motion.div>
+                </div>
 
-                {/* Restart */}
                 <button
                     onClick={onRestart}
                     className="w-full py-3 font-spectral text-parchment/60 hover:text-parchment transition-colors"
