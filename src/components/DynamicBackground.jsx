@@ -131,8 +131,8 @@ export default function DynamicBackground({ theme = 'dungeon', children }) {
                 </motion.div>
             </AnimatePresence>
 
-            {/* Content layer */}
-            <div className="relative z-20 h-full overflow-hidden">
+            {/* Content layer - No overflow hidden here to allow screens to scroll themselves */}
+            <div className="relative z-20 h-full">
                 {children}
             </div>
         </div>

@@ -3,7 +3,7 @@ import GlowButton from '../components/GlowButton';
 
 export default function LandingScreen({ onStart }) {
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center px-6 py-12 safe-area-top safe-area-bottom overflow-y-auto">
+        <div className="h-dvh flex flex-col items-center justify-center px-6 py-12 safe-area-top safe-area-bottom overflow-y-auto">
             {/* Mystical Seal */}
             <motion.div
                 className="relative mb-8"

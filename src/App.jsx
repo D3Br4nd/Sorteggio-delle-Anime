@@ -62,7 +62,7 @@ export default function App() {
     }, []);
 
     return (
-        <div className="relative min-h-dvh overflow-hidden no-select">
+        <div className="relative h-dvh overflow-hidden no-select">
             {/* Branding Footer - Hidden on very small height screens to avoid covering buttons */}
             <div className="fixed bottom-0 left-0 right-0 z-40 flex justify-between items-center px-6 py-4 pointer-events-none sm:opacity-100 opacity-0 transition-opacity duration-500">
                 <motion.img

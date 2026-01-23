@@ -92,7 +92,7 @@ export default function ResultScreen({ result, onRestart }) {
     };
 
     return (
-        <div className="min-h-screen flex flex-col px-5 py-8 safe-area-top safe-area-bottom overflow-y-auto">
+        <div className="h-dvh flex flex-col px-5 py-8 safe-area-top safe-area-bottom overflow-y-auto">
             {/* Flash overlay */}
             <AnimatePresence>
                 {showFlash && (

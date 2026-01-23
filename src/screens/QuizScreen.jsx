@@ -59,7 +59,7 @@ export default function QuizScreen({ onComplete, onBackgroundChange }) {
     });
 
     return (
-        <div className="min-h-screen flex flex-col px-5 py-6 safe-area-top safe-area-bottom overflow-y-auto">
+        <div className="h-dvh flex flex-col px-5 py-6 safe-area-top safe-area-bottom overflow-y-auto">
             {/* Progress */}
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
