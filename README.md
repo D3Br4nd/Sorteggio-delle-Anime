@@ -5,7 +5,7 @@
 Benvenuto nel portale della **Loggia Lumen Mentis**. *Il Sorteggio delle Anime* è un'esperienza interattiva dark fantasy progettata per rivelare il vero destino di ogni partecipante prima dell'inizio della caccia.
 
 ![Visual Style](https://img.shields.io/badge/Aesthetics-Dark%20Fantasy-gold?style=for-the-badge)
-![Tech Stack](https://img.shields.io/badge/Stack-React%20%2B%20Framer%20Motion%20%2B%20Tailwind-blue?style=for-the-badge)
+![Tech Stack](https://img.shields.io/badge/Stack-React%20%2B%20Node.js%20%2B%20Redis-blue?style=for-the-badge)
 ![Docker](https://img.shields.io/badge/Container-Docker%20Ready-green?style=for-the-badge)
 
 ## ⚔️ L'Esperienza
@@ -20,35 +20,40 @@ Un rituale in 7 atti dove ogni scelta plasma la tua essenza. Al termine del perc
 
 *   **Chiaroscuro Design**: Un'estetica premium ispirata a *Elden Ring* e ai codici di Leonardo.
 *   **Atmosphere Immersiva**: Sfondi dinamici con forme antiche fluttuanti e particelle in movimento.
-*   **Rito del Destino**: Transizioni animate fluide e un rituale finale di "giudizio".
-*   **Screenshot & Share**: Condividi la tua carta destino sui social con un click, completa di grafica dedicata e hashtag ufficiali.
-*   **Mobile-First**: Ottimalizzato per un'esperienza fluida su qualsiasi dispositivo durante l'evento.
+*   **Global Ranking**: Visualizza in tempo reale quante "anime" hanno ottenuto ogni profilo.
+*   **Screenshot & Share**: Condividi la tua carta destino sui social con un click.
+*   **Tracking & Stats**: Sistema integrato per monitorare la partecipazione e i risultati.
 
 ## 🚀 Deployment
 
-L'applicazione è pronta per essere ospitata sul server PLV.
+L'applicazione è configurata per essere ospitata via Docker con supporto per il tracciamento dei risultati.
 
-### Con Docker (Raccomandato)
+### Configurazione
+Modifica il file `docker-compose.yml` per impostare l'URL del tuo database Redis:
+```yaml
+REDIS_URL=redis://redis-cache:6379/3
+```
 
+### Avvio (Docker Compose)
 ```bash
 docker compose up -d --build
 ```
-L'app sarà disponibile su `http://localhost:8080`.
+L'applicazione sarà accessibile all'indirizzo configurato nel tuo proxy (es. `/sda/`).
 
-### Setup Locale
+## 📊 Amministrazione
 
-```bash
-npm install
-npm run dev
-```
+Il sistema offre degli strumenti per monitorare l'andamento del sorteggio:
+
+- **Punteggi Generali**: Accedi a `/sda/scores` per vedere il tabellone riassuntivo.
+- **Esportazione CSV**: Visita `/sda/api/export` per scaricare tutti i risultati anonimizzati per analisi esterne.
 
 ## 🛠️ Tech Stack
 
-*   **Frontend**: React (Vite)
-*   **Animazioni**: Framer Motion
-*   **Styling**: Tailwind CSS
-*   **Cattura Immagini**: html-to-image
-*   **Container**: Docker & Nginx
+*   **Frontend**: React (Vite) + Framer Motion
+*   **Backend**: Node.js (Express)
+*   **Database**: Redis (per statistiche in tempo reale)
+*   **Nginx**: Reverse Proxy integrato per SPA routing e API
+*   **Container**: Docker
 
 ---
 
